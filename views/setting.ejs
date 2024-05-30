@@ -13,7 +13,7 @@
         <input type="text" id="netmask" name="netmask" value="<%= netmask %>" required><br>
         <label for="gateway">Gateway:</label>
         <input type="text" id="gateway" name="gateway" value="<%= gateway %>" required><br>
-        <button type="submit" id="setIP">Set IP</button>
+        <button type="button" id="setIP">Set IP</button>
     </form>
     <script>
         var ip = document.getElementById('ip');
@@ -41,14 +41,25 @@
             }
         });
 
-        var setIP = document.getElementById('setIP');
-        setIP.addEventListener('click', function() {
-            if (!ip.checkValidity() || !netmask.checkValidity() || !gateway.checkValidity()) {
-                alert('Invalid input');
-                return false;
-            }
-            else {
-                return true;
+        document.getElementById('setIP').addEventListener('click', function() {
+            if (ip.checkValidity() && netmask.checkValidity() && gateway.checkValidity()) {
+                fetch('/set-ip', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        ip: ip.value,
+                        netmask: netmask.value,
+                        gateway: gateway.value
+                    })
+                }).then(function(response) {
+                    if (response.ok) {
+                        alert('IP address set successfully');
+                    } else {
+                        alert('Failed to set IP address');
+                    }
+                });
             }
         });
     </script>

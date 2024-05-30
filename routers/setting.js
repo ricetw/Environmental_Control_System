@@ -39,5 +39,5 @@ exports.renderSetting = (req, res) => {
 };
 
 exports.settingIP = (req, res) => {
-    
+    console.log(req.body);
 };
