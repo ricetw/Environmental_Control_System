@@ -43,6 +43,10 @@
 
         document.getElementById('setIP').addEventListener('click', function() {
             if (ip.checkValidity() && netmask.checkValidity() && gateway.checkValidity()) {
+                console.log('Setting IP address');
+                console.log(ip.value);
+                console.log(netmask.value);
+                console.log(gateway.value);
                 fetch('/set-ip', {
                     method: 'POST',
                     headers: {
