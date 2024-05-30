@@ -1,16 +1,46 @@
-const express = require('express');
+const uuid = require("uuid");
+const os = require('os');
+const { exec } = require('child_process');
+const { request } = require('http');
+const { title } = require("process");
 
-const router = express.Router();
+exports.renderSetting = (req, res) => {
+    const networkInterfaces = os.networkInterfaces();
+    console.log(networkInterfaces);
+    const ip = networkInterfaces['乙太網路'].find(i => i.family === 'IPv4').address;
+    console.log(ip);
 
-// Define the /settingIP route
-router.post('/settingIP', (req, res) => {
-    // Get the new IP address from the request body
-    const newIP = req.body.ip;
+    exec('ifconfig eth0', (error, stdout, stderr) => {
+        if (error) {
+            console.error(`exec error: ${error}`);
+            return res.send(`Error retrieving network configuration: ${stderr}`);
+        }
 
-    // TODO: Implement the logic to change the Raspberry Pi's fixed IP address using the newIP
+        const netmaskMatch = stdout.match(/netmask (\d+\.\d+\.\d+\.\d+)/);
+        const netmask = netmaskMatch ? netmaskMatch[1] : '';
 
-    // Send a response indicating success or failure
-    res.json({ success: true, message: 'IP address updated successfully' });
-});
+        exec('route -n', (error, stdout, stderr) => {
+            if (error) {
+                console.error(`exec error: ${error}`);
+                return res.send(`Error retrieving gateway: ${stderr}`);
+            }
 
-module.exports = router;
+            const gatewayMatch = stdout.match(/0.0.0.0\s+(\d+\.\d+\.\d+\.\d+)/);
+            const gateway = gatewayMatch ? gatewayMatch[1] : '';
+
+            // 渲染视图并填充当前的网络配置信息
+            res.render('setting', {
+                title: "Setting",
+                message: "Setting Page",
+                sessionID: uuid.v4(),
+                ip: ip,
+                netmask: netmask,
+                gateway: gateway
+            });
+        });
+    });
+};
+
+exports.settingIP = (req, res) => {
+
+};
