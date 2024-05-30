@@ -33,7 +33,7 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: data
+                    body: JSON.stringify(data)
                 }).then(function(response) {
                     if (response.ok) {
                         alert('IP address set successfully');
