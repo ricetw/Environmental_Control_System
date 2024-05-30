@@ -7,7 +7,7 @@ const { title } = require("process");
 exports.renderSetting = (req, res) => {
     const networkInterfaces = os.networkInterfaces();
     console.log(networkInterfaces);
-    const ip = networkInterfaces['乙太網路'].find(i => i.family === 'IPv4').address;
+    const ip = networkInterfaces['eth0'].find(i => i.family === 'IPv4').address;
     console.log(ip);
 
     exec('ifconfig eth0', (error, stdout, stderr) => {
