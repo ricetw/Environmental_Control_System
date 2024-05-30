@@ -19,44 +19,21 @@
         var ip = document.getElementById('ip');
         var netmask = document.getElementById('netmask');
         var gateway = document.getElementById('gateway');
-        ip.addEventListener('input', function() {
-            if (!ip.value.match(/^(\d{1,3}\.){3}\d{1,3}$/)) {
-                ip.setCustomValidity('Invalid IP address');
-            } else {
-                ip.setCustomValidity('');
-            }
-        });
-        netmask.addEventListener('input', function() {
-            if (!netmask.value.match(/^(\d{1,3}\.){3}\d{1,3}$/)) {
-                netmask.setCustomValidity('Invalid netmask');
-            } else {
-                netmask.setCustomValidity('');
-            }
-        });
-        gateway.addEventListener('input', function() {
-            if (!gateway.value.match(/^(\d{1,3}\.){3}\d{1,3}$/)) {
-                gateway.setCustomValidity('Invalid gateway');
-            } else {
-                gateway.setCustomValidity('');
-            }
-        });
-
+        var data = {
+            ip: ip.value,
+            netmask: netmask.value,
+            gateway: gateway.value
+        }
         document.getElementById('setIP').addEventListener('click', function() {
             if (ip.checkValidity() && netmask.checkValidity() && gateway.checkValidity()) {
                 console.log('Setting IP address');
-                console.log(ip.value);
-                console.log(netmask.value);
-                console.log(gateway.value);
+                console.log(data);
                 fetch('/set-ip', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        ip: ip.value,
-                        netmask: netmask.value,
-                        gateway: gateway.value
-                    })
+                    body: JSON.stringify(data)
                 }).then(function(response) {
                     if (response.ok) {
                         alert('IP address set successfully');
