@@ -6,9 +6,7 @@ const { title } = require("process");
 
 exports.renderSetting = (req, res) => {
     const networkInterfaces = os.networkInterfaces();
-    console.log(networkInterfaces);
     const ip = networkInterfaces['eth0'].find(i => i.family === 'IPv4').address;
-    console.log(ip);
 
     exec('ifconfig eth0', (error, stdout, stderr) => {
         if (error) {
@@ -28,7 +26,6 @@ exports.renderSetting = (req, res) => {
             const gatewayMatch = stdout.match(/0.0.0.0\s+(\d+\.\d+\.\d+\.\d+)/);
             const gateway = gatewayMatch ? gatewayMatch[1] : '';
 
-            // 渲染视图并填充当前的网络配置信息
             res.render('setting', {
                 title: "Setting",
                 message: "Setting Page",
@@ -42,5 +39,5 @@ exports.renderSetting = (req, res) => {
 };
 
 exports.settingIP = (req, res) => {
-
+    
 };
