@@ -45,7 +45,7 @@ exports.settingIP = (req, res) => {
     const netmask = req.body.netmask;
     const gateway = req.body.gateway;
 
-    exec(`ifconfig eth0 ${ip} netmask ${netmask}`, (error, stdout, stderr) => {
+    exec(`sudo ifconfig eth0 ${ip} netmask ${netmask}`, (error, stdout, stderr) => {
         if (error) {
             console.error(`exec error: ${error}`);
             return res.status(500).send({
@@ -54,7 +54,7 @@ exports.settingIP = (req, res) => {
             });
         }
 
-        exec(`route add default gw ${gateway}`, (error, stdout, stderr) => {
+        exec(`sudo route add default gw ${gateway}`, (error, stdout, stderr) => {
             if (error) {
                 console.error(`exec error: ${error}`);
                 return res.status(500).send({
