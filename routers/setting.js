@@ -103,4 +103,5 @@ exports.settingIP = (req, res) => {
                 });
             });
         });
+    });
 };
