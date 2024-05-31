@@ -92,7 +92,7 @@ static domain_name_servers=8.8.8.8
                 });
             }
 
-            exec('sudo systemctl restart dhcpcd.service', (error, stdout, stderr) => {
+            exec('sudo reboot', (error, stdout, stderr) => {
                 if (error) {
                     console.error(`exec error: ${error}`);
                     return res.status(500).send({
@@ -105,7 +105,7 @@ static domain_name_servers=8.8.8.8
                     result: 0,
                     newIP: ip,
                 });
-            // });
+            });
         });
     });
 };
