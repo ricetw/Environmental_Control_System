@@ -35,7 +35,7 @@
                     },
                     body: JSON.stringify(data)
                 }).then(function(response) {
-                    if (response.status === 0) {
+                    if (response.result === 0) {
                         console.log('IP address set successfully');
                         window.location.href = `http://${response.newIP}:5000/Setting`;
                     } else {
