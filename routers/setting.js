@@ -61,6 +61,7 @@ exports.settingIP = (req, res) => {
     static domain_name_servers=8.8.8.8`;
 
     fs.readFile('/etc/dhcpcd.conf', 'utf8', (err, data) => {
+        console.log(data);
         if (err) {
             console.error(err);
             return res.status(500).send({
@@ -70,6 +71,7 @@ exports.settingIP = (req, res) => {
         }
 
         const oldIPconfig = data.match(/interface eth0[\s\S]*?static domain_name_servers=8\.8\.8\.8/);
+        console.log(oldIPconfig);
         if (!oldIPconfig) {
             return res.status(500).send({
                 status: 1,
@@ -78,8 +80,10 @@ exports.settingIP = (req, res) => {
         }
 
         const newDhcpcdConf = data.replace(oldIPconfig[0], newIPconfig);
+        console.log(newDhcpcdConf);
 
         fs.writeFile('/etc/dhcpcd.conf', newDhcpcdConf, (err) => {
+            console.log('Writing new dhcpcd.conf');
             if (err) {
                 console.error(err);
                 return res.status(500).send({
