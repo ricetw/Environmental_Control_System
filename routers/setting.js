@@ -27,7 +27,8 @@ exports.renderSetting = (req, res) => {
             return res.send(`Error retrieving network configuration: ${stderr}`);
         }
 
-        const netmaskMatch = stdout.match(/netmask (\d+\.\d+\.\d+\.\d+)/);
+        const netmaskMatch = stdout.match(/inet (\d+\.\d+\.\d+\.\d+)/);
+        console.log(netmaskMatch);
         const netmask = netmaskMatch ? cidrToNetmask(netmaskMatch[1]) : '';
 
         exec('ip route show', (error, stdout, stderr) => {
@@ -36,7 +37,7 @@ exports.renderSetting = (req, res) => {
                 return res.send(`Error retrieving gateway: ${stderr}`);
             }
 
-            const gatewayMatch = stdout.match(/0.0.0.0\s+(\d+\.\d+\.\d+\.\d+)/);
+            const gatewayMatch = stdout.match(/default via (\d+\.\d+\.\d+\.\d+)/);
             const gateway = gatewayMatch ? gatewayMatch[1] : '';
 
             res.render('setting', {
@@ -62,8 +63,7 @@ exports.settingIP = (req, res) => {
 nogateway
 static ip_address=${ip}/${cidr}
 static routers=${gateway}
-static domain_name_servers=8.8.8.8
-    `;
+static domain_name_servers=8.8.8.8`;
 
     console.log(newIPconfig);
 
