@@ -1,3 +1,4 @@
+const fs = require('fs');
 const uuid = require("uuid");
 const os = require('os');
 const { exec } = require('child_process');
@@ -53,29 +54,53 @@ exports.settingIP = (req, res) => {
     const cidr = netmaskToCIDR(netmask);
     console.log(`IP: ${ip}, Netmask: ${netmask}, Gateway: ${gateway}, CIDR: ${cidr}`);
 
-    exec(`sudo ifconfig eth0 ${ip} netmask ${netmask}`, (error, stdout, stderr) => {
-        if (error) {
-            console.error(`exec error: ${error}`);
+    const newIPconfig = `
+    interface eth0
+    static ip_address=${ip}/${cidr}
+    static routers=${gateway}
+    static domain_name_servers=8.8.8.8`;
+
+    fs.readFile('/etc/dhcpcd.conf', 'utf8', (err, data) => {
+        if (err) {
+            console.error(err);
             return res.status(500).send({
-                status: "1",
-                message: `Error setting IP: ${stderr}`
+                status: 1,
+                message: `Error reading dhcpcd.conf: ${err}`
             });
         }
 
-        exec(`sudo route add default gw ${gateway}`, (error, stdout, stderr) => {
-            if (error) {
-                console.error(`exec error: ${error}`);
+        const oldIPconfig = data.match(/interface eth0[\s\S]*?static domain_name_servers=8\.8\.8\.8/);
+        if (!oldIPconfig) {
+            return res.status(500).send({
+                status: 1,
+                message: `Error: Cannot find old IP configuration`
+            });
+        }
+
+        const newDhcpcdConf = data.replace(oldIPconfig[0], newIPconfig);
+
+        fs.writeFile('/etc/dhcpcd.conf', newDhcpcdConf, (err) => {
+            if (err) {
+                console.error(err);
                 return res.status(500).send({
-                    status: "1",
-                    message: `Error setting IP: ${stderr}`
+                    status: 1,
+                    message: `Error writing dhcpcd.conf: ${err}`
                 });
             }
 
-            res.status(200).send({ 
-                status: "0",
-                message: "IP setting success",
-                newIP: ip,
+            exec('sudo systemctl restart dhcpcd', (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`exec error: ${error}`);
+                    return res.status(500).send({
+                        status: 1,
+                        message: `Error rebooting: ${stderr}`
+                    });
+                }
+
+                res.status(200).send({
+                    status: 0,
+                    newIP: ip,
+                });
             });
         });
-    });
 };
