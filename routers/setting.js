@@ -68,7 +68,7 @@ static domain_name_servers=8.8.8.8
         if (err) {
             console.error(err);
             return res.status(500).send({
-                status: 1,
+                result: 1,
                 message: `Error reading dhcpcd.conf: ${err}`
             });
         }
@@ -77,7 +77,7 @@ static domain_name_servers=8.8.8.8
         console.log(oldIPconfig);
         if (!oldIPconfig) {
             return res.status(500).send({
-                status: 1,
+                result: 1,
                 message: `Error: Cannot find old IP configuration`
             });
         }
@@ -90,7 +90,7 @@ static domain_name_servers=8.8.8.8
             if (err) {
                 console.error(err);
                 return res.status(500).send({
-                    status: 1,
+                    result: 1,
                     message: `Error writing dhcpcd.conf: ${err}`
                 });
             }
@@ -99,13 +99,13 @@ static domain_name_servers=8.8.8.8
                 if (error) {
                     console.error(`exec error: ${error}`);
                     return res.status(500).send({
-                        status: 1,
+                        result: 1,
                         message: `Error rebooting: ${stderr}`
                     });
                 }
 
                 res.status(200).send({
-                    status: 0,
+                    result: 0,
                     newIP: ip,
                 });
             });
