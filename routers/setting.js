@@ -6,6 +6,11 @@ const { request } = require('http');
 const { title } = require("process");
 const { stat } = require("fs");
 
+function cidrToNetmask(cidr) {
+    const binaryNetmask = '1'.repeat(cidr).padEnd(32, '0');
+    return binaryNetmask.match(/.{8}/g).map((octet) => parseInt(octet, 2)).join('.');
+}
+
 function netmaskToCIDR(netmask) {
     const netmaskArray = netmask.split('.');
     const binaryNetmask = netmaskArray.map((octet) => parseInt(octet).toString(2).padStart(8, '0')).join('');
@@ -23,7 +28,7 @@ exports.renderSetting = (req, res) => {
         }
 
         const netmaskMatch = stdout.match(/netmask (\d+\.\d+\.\d+\.\d+)/);
-        const netmask = netmaskMatch ? netmaskMatch[1] : '';
+        const netmask = netmaskMatch ? cidrToNetmask(netmaskMatch[1]) : '';
 
         exec('ip route show', (error, stdout, stderr) => {
             if (error) {
