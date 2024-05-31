@@ -5,6 +5,12 @@ const { request } = require('http');
 const { title } = require("process");
 const { stat } = require("fs");
 
+function netmaskToCIDR(netmask) {
+    const netmaskArray = netmask.split('.');
+    const binaryNetmask = netmaskArray.map((octet) => parseInt(octet).toString(2).padStart(8, '0')).join('');
+    return binaryNetmask.split('1').length - 1;
+}
+
 exports.renderSetting = (req, res) => {
     const networkInterfaces = os.networkInterfaces();
     const ip = networkInterfaces['eth0'].find(i => i.family === 'IPv4').address;
@@ -44,6 +50,8 @@ exports.settingIP = (req, res) => {
     const ip = req.body.ip;
     const netmask = req.body.netmask;
     const gateway = req.body.gateway;
+    const cidr = netmaskToCIDR(netmask);
+    console.log(`IP: ${ip}, Netmask: ${netmask}, Gateway: ${gateway}, CIDR: ${cidr}`);
 
     exec(`sudo ifconfig eth0 ${ip} netmask ${netmask}`, (error, stdout, stderr) => {
         if (error) {
