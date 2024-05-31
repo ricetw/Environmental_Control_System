@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Set Raspberry Pi Static IP</title>
+    <title>設定</title>
 </head>
 <body>
     <h1>Set Raspberry Pi Static IP</h1>
@@ -35,10 +35,11 @@
                     },
                     body: JSON.stringify(data)
                 }).then(function(response) {
-                    if (response.ok) {
-                        alert('IP address set successfully');
+                    if (response.status === 0) {
+                        console.log('IP address set successfully');
+                        window.location.href = '/Setting';
                     } else {
-                        alert('Failed to set IP address');
+                        console.log('Failed to set IP address');
                     }
                 });
             }

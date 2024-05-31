@@ -3,6 +3,7 @@ const os = require('os');
 const { exec } = require('child_process');
 const { request } = require('http');
 const { title } = require("process");
+const { stat } = require("fs");
 
 exports.renderSetting = (req, res) => {
     const networkInterfaces = os.networkInterfaces();
@@ -39,5 +40,33 @@ exports.renderSetting = (req, res) => {
 };
 
 exports.settingIP = (req, res) => {
-    console.log(req);
+    console.log(req.body);
+    const ip = req.body.ip;
+    const netmask = req.body.netmask;
+    const gateway = req.body.gateway;
+
+    exec(`ifconfig eth0 ${ip} netmask ${netmask}`, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`exec error: ${error}`);
+            return res.status(500).send({
+                status: "1",
+                message: `Error setting IP: ${stderr}`
+            });
+        }
+
+        exec(`route add default gw ${gateway}`, (error, stdout, stderr) => {
+            if (error) {
+                console.error(`exec error: ${error}`);
+                return res.status(500).send({
+                    status: "1",
+                    message: `Error setting IP: ${stderr}`
+                });
+            }
+
+            res.status(200).send({ 
+                status: "0",
+                message: "IP setting success" 
+            });
+        });
+    });
 };
