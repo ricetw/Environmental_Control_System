@@ -65,7 +65,8 @@ exports.settingIP = (req, res) => {
 
             res.status(200).send({ 
                 status: "0",
-                message: "IP setting success" 
+                message: "IP setting success",
+                newIP: ip,
             });
         });
     });

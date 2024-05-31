@@ -37,7 +37,7 @@
                 }).then(function(response) {
                     if (response.status === 0) {
                         console.log('IP address set successfully');
-                        window.location.href = '/Setting';
+                        window.location.href = `http://${response.newIP}/Setting`;
                     } else {
                         console.log('Failed to set IP address');
                     }
