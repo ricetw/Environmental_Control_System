@@ -53,8 +53,7 @@ exports.settingIP = (req, res) => {
     const gateway = req.body.gateway;
     const cidr = netmaskToCIDR(netmask);
 
-    const newIPconfig = `
-interface eth0
+    const newIPconfig = `interface eth0
 nogateway
 static ip_address=${ip}/${cidr}
 static routers=${gateway}
@@ -93,14 +92,14 @@ static domain_name_servers=8.8.8.8
                 });
             }
 
-            // exec('sudo reboot', (error, stdout, stderr) => {
-            //     if (error) {
-            //         console.error(`exec error: ${error}`);
-            //         return res.status(500).send({
-            //             result: 1,
-            //             message: `Error rebooting: ${stderr}`
-            //         });
-            //     }
+            exec('sudo systemctl restart dhcpcd.service', (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`exec error: ${error}`);
+                    return res.status(500).send({
+                        result: 1,
+                        message: `Error rebooting: ${stderr}`
+                    });
+                }
 
                 res.status(200).send({
                     result: 0,
