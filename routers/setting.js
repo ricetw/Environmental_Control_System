@@ -52,12 +52,14 @@ exports.settingIP = (req, res) => {
     const netmask = req.body.netmask;
     const gateway = req.body.gateway;
     const cidr = netmaskToCIDR(netmask);
-    
+
     const newIPconfig = `
-    interface eth0
-    static ip_address=${ip}/${cidr}
-    static routers=${gateway}
-    static domain_name_servers=8.8.8.8`;
+interface eth0
+nogateway
+static ip_address=${ip}/${cidr}
+static routers=${gateway}
+static domain_name_servers=8.8.8.8
+    `;
 
     console.log(newIPconfig);
 
