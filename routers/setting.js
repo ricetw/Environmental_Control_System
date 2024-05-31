@@ -52,13 +52,14 @@ exports.settingIP = (req, res) => {
     const netmask = req.body.netmask;
     const gateway = req.body.gateway;
     const cidr = netmaskToCIDR(netmask);
-    console.log(`IP: ${ip}, Netmask: ${netmask}, Gateway: ${gateway}, CIDR: ${cidr}`);
-
+    
     const newIPconfig = `
     interface eth0
     static ip_address=${ip}/${cidr}
     static routers=${gateway}
     static domain_name_servers=8.8.8.8`;
+
+    console.log(newIPconfig);
 
     fs.readFile('/etc/dhcpcd.conf', 'utf8', (err, data) => {
         console.log(data);
