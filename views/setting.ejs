@@ -39,7 +39,7 @@
                         console.log('IP address set successfully');
                         window.location.href = `http://${response.newIP}:5000/Setting`;
                     } else {
-                        console.log('Failed to set IP address');
+                        console.log('Failed to set IP address', response.message);
                     }
                 });
             }
