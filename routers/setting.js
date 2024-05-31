@@ -64,7 +64,6 @@ static domain_name_servers=8.8.8.8
     console.log(newIPconfig);
 
     fs.readFile('/etc/dhcpcd.conf', 'utf8', (err, data) => {
-        console.log(data);
         if (err) {
             console.error(err);
             return res.status(500).send({
@@ -74,7 +73,6 @@ static domain_name_servers=8.8.8.8
         }
 
         const oldIPconfig = data.match(/interface eth0[\s\S]*?static domain_name_servers=8\.8\.8\.8/);
-        console.log(oldIPconfig);
         if (!oldIPconfig) {
             return res.status(500).send({
                 result: 1,
@@ -95,20 +93,20 @@ static domain_name_servers=8.8.8.8
                 });
             }
 
-            exec('sudo reboot', (error, stdout, stderr) => {
-                if (error) {
-                    console.error(`exec error: ${error}`);
-                    return res.status(500).send({
-                        result: 1,
-                        message: `Error rebooting: ${stderr}`
-                    });
-                }
+            // exec('sudo reboot', (error, stdout, stderr) => {
+            //     if (error) {
+            //         console.error(`exec error: ${error}`);
+            //         return res.status(500).send({
+            //             result: 1,
+            //             message: `Error rebooting: ${stderr}`
+            //         });
+            //     }
 
                 res.status(200).send({
                     result: 0,
                     newIP: ip,
                 });
-            });
+            // });
         });
     });
 };
