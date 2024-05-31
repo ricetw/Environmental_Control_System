@@ -25,7 +25,7 @@ exports.renderSetting = (req, res) => {
         const netmaskMatch = stdout.match(/netmask (\d+\.\d+\.\d+\.\d+)/);
         const netmask = netmaskMatch ? netmaskMatch[1] : '';
 
-        exec('route -n', (error, stdout, stderr) => {
+        exec('ip route show', (error, stdout, stderr) => {
             if (error) {
                 console.error(`exec error: ${error}`);
                 return res.send(`Error retrieving gateway: ${stderr}`);
