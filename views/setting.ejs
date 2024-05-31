@@ -16,15 +16,15 @@
         <button type="button" id="setIP">Set IP</button>
     </form>
     <script>
-        var ip = document.getElementById('ip');
-        var netmask = document.getElementById('netmask');
-        var gateway = document.getElementById('gateway');
-        var data = {
-            ip: ip.value,
-            netmask: netmask.value,
-            gateway: gateway.value
-        }
         document.getElementById('setIP').addEventListener('click', function() {
+            var ip = document.getElementById('ip');
+            var netmask = document.getElementById('netmask');
+            var gateway = document.getElementById('gateway');
+            var data = {
+                ip: ip.value,
+                netmask: netmask.value,
+                gateway: gateway.value
+            }
             if (ip.checkValidity() && netmask.checkValidity() && gateway.checkValidity()) {
                 console.log('Setting IP address');
                 console.log(data);
