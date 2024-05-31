@@ -16,7 +16,7 @@ exports.renderSetting = (req, res) => {
     const networkInterfaces = os.networkInterfaces();
     const ip = networkInterfaces['eth0'].find(i => i.family === 'IPv4').address;
 
-    exec('ifconfig eth0', (error, stdout, stderr) => {
+    exec('ip addr show eth0', (error, stdout, stderr) => {
         if (error) {
             console.error(`exec error: ${error}`);
             return res.send(`Error retrieving network configuration: ${stderr}`);
